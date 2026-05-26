@@ -4,5 +4,23 @@
     "titulo": "Soporte de login",
     "descripcion": "El usuario no puede recuperar su contraseña",
     "prioridad": "alta"
+  },
+  {
+    "id": 2,
+    "titulo": "testeo",
+    "descripcion": "testeo",
+    "prioridad": "baja"
+  },
+  {
+    "id": 3,
+    "titulo": "1233",
+    "descripcion": "12323",
+    "prioridad": "baja"
+  },
+  {
+    "id": 4,
+    "titulo": "Error 500 al procesar pago ",
+    "descripcion": "Losclientes tienen problemas para procesar sus pagos",
+    "prioridad": "alta"
   }
 ]

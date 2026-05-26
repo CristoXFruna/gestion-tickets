@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Maqueta de Tickets</title>
+</head>
+<body>
+
+    <h1>Formulario de Tickets</h1>
+    
+    <form id="ticketForm">
+        <div>
+            <label>Título:</label>
+            <input type="text" id="titulo" required>
+        </div>
+        <br>
+        <div>
+            <label>Descripción:</label>
+            <textarea id="descripcion" required></textarea>
+        </div>
+        <br>
+        <div>
+            <label>Prioridad:</label>
+            <select id="prioridad">
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+            </select>
+        </div>
+        <br>
+        <button type="submit">Enviar al Backend</button>
+    </form>
+
+    <hr>
+
+    <h2>Lista de Tickets en el Sistema</h2>
+    <div id="ticketsContainer">Cargando datos...</div>
+
+    <script>
+        const API_URL = '/api/tickets';
+
+        async function cargarTickets() {
+            try {
+                const response = await fetch(API_URL);
+                const tickets = await response.json();
+                const container = document.getElementById('ticketsContainer');
+                
+                if (tickets.length === 0) {
+                    container.innerHTML = '<p>No hay recursos registrados.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                const ul = document.createElement('ul');
+                tickets.forEach(ticket => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>ID #${ticket.id} - ${ticket.titulo}</strong> (${ticket.prioridad})<br>Descripción: ${ticket.descripcion}`;
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            } catch (error) {
+                document.getElementById('ticketsContainer').innerText = 'Error al conectar con el servidor.';
+            }
+        }
+
+        document.getElementById('ticketForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                titulo: document.getElementById('titulo').value,
+                descripcion: document.getElementById('descripcion').value,
+                prioridad: document.getElementById('prioridad').value
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    alert(resultado.mensaje);
+                    document.getElementById('ticketForm').reset();
+                    cargarTickets(); 
+                } else {
+                    alert('Error: ' + resultado.mensaje);
+                }
+            } catch (error) {
+                alert('Error en la conexión con el servidor.');
+            }
+        });
+
+        
+        cargarTickets();
+    </script>
+</body>
+</html>
